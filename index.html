@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Przetwarzanie obrazów</title>
+
+    <link rel="stylesheet" type="text/css" href="style.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.11.10/lib/p5.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.11.10/lib/addons/p5.sound.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <div id="app">
+
+        <div id="menu">
+
+            <div id="zero" class="section">
+                <h4>Scena</h4>
+                <button id="loadImg1Btn">Wczytaj pierwszy obraz</button>
+                <button id="loadImg2Btn">Wczytaj drugi obraz</button>
+                <button id="swapImg12Btn">Zamień 1 z 2</button>
+                <button id="swapImg13Btn">Zamień 1 z 3</button>
+                <button id="swapImg14Btn">Zamień 1 z 4</button>
+                <button id="swapImg34Btn">Zamień 3 z 4</button>
+                <div id="histControls">
+                    <label><input type="checkbox" id="histImg1" checked> Obraz 1</label><br>
+                    <label><input type="checkbox" id="histImg2"> Obraz 2</label><br>
+                    <label><input type="checkbox" id="histImg3"> Obraz 3</label><br>
+                    <label><input type="checkbox" id="histImg4"> Obraz 4</label>
+                </div>
+                <button id="toggleHistogramBtn">Pokaż histogram</button>
+            </div>
+
+
+            <div id="one" class="section">
+                <h4>Jeden obraz</h4>
+
+                <button id="grayBtn">Do szarości</button>
+                <div class="control-group">
+                    <button id="clampingBtn">Clamping</button>
+                    <input type="number" id="clampingInput" value="2">
+                </div>
+                <div class="control-group">
+                    <button id="brightnessBtn">Zmień jasność</button>
+                    <input type="number" id="brightnessInput" value="-40">
+                </div>
+                <div class="control-group">
+                    <button id="contrastBtn">Zmień kontrast</button>
+                    <input type="number" id="contrastInput" value="2">
+                </div>
+                <div class="control-group">
+                    <button id="gammaBtn">Korekcja gamma</button>
+                    <input type="number" id="gammaInput" value="2">
+                </div>
+
+                <button id="invertBtn">Odwróć kolory</button>
+                <button id="thresholdBtn">Progowanie</button>
+            </div>
+
+            <div id="two" class="section">
+                <h4>Dwa obrazy</h4>
+
+                <button id="gray2Btn">Do szarości (2)</button>
+                <button id="addBtn">Suma</button>
+                <button id="subBtn">Różnica</button>
+                <button id="diffModBtn">Różnica modulo</button>
+                <button id="multBtn">Mnożenie</button>
+                <button id="divBtn">Dzielenie</button>
+                <button id="avgBtn">Średnia</button>
+                <button id="minBtn">Minimum</button>
+                <button id="maxBtn">Maksimum</button>
+            </div>
+
+            <div id="filters" class="section">
+                <h4>Filtry</h4>
+                <textarea id="filterArea" rows="10">      
+                    1 2 1
+                    2 3 2
+                    1 2 1
+                </textarea>
+                <button id="linFilterBtn">Liniowy</button>
+                <button id="minNonlinFilterBtn">Nieliniowy minimum</button>
+                <button id="maxNonlinFilterBtn">Nieliniowy maksimum</button>
+                <button id="medianNonlinFilterBtn">Nieliniowy medianowy</button>
+                <button id="weightedNonlinMedianFilterBtn">Nieliniowy mediana ważona</button>
+            </div>
+
+        </div>
+
+        <div id="canvas-container">
+            <canvas id="histCanvas" style="display:none;"></canvas>
+        </div>
+        
+    </div>
+
+    <input type="file" id="fileInput" style="display:none" />
+
+    <script src="operations.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>

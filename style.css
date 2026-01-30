@@ -1,0 +1,136 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    font-family: Arial, sans-serif;
+}
+
+#app {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+}
+
+#menu {
+    flex: 0 0 320px;
+    min-width: 200px;
+    background: #f2f2f2;
+    overflow-y: auto;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.section {
+    margin-bottom: 12px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #bbb;
+}
+
+.section h4 {
+    margin: 4px 0;
+    font-size: 12px;
+}
+
+button {
+    display: block;
+    width: 100%;
+    margin-bottom: 4px;
+    padding: 2px 4px;
+    font-size: 11px;
+    cursor: pointer;
+}
+
+input, textarea {
+    width: 100%;
+    font-size: 11px;
+    margin-bottom: 4px;
+}
+
+textarea {
+    height: 60px;
+    resize: vertical;
+}
+
+#canvas-container {
+    flex: 1;
+    position: relative;
+    background: #444;
+    overflow: hidden;
+}
+
+#histCanvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    background: #fff;
+}
+
+.control-group {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    margin-bottom: 4px;
+}
+
+.control-group button {
+    flex: 1;
+}
+
+.control-group input {
+    width: 50px;
+    font-size: 11px;
+}
+
+#histControls {
+    display: flex;
+    padding-right: 5px;
+    align-items: center;
+    flex-wrap: wrap;
+    font-size: 11px;
+}
+
+#histControls label {
+    display: flex;
+    align-items: center;
+    gap: 0px;
+    cursor: pointer;
+    user-select: none;
+}
+
+#histControls input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    border: 2px solid #666;
+    border-radius: 2px;
+    position: relative;
+    cursor: pointer;
+}
+
+#histControls input[type="checkbox"]:checked::after {
+    content: "";
+    position: absolute;
+    left: 4px;
+    top: 0px;
+    width: 6px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+#histImg1 { border-color: #e53935; }
+#histImg1:checked { background: #e53935; }
+
+#histImg2 { border-color: #1e88e5; }
+#histImg2:checked { background: #1e88e5; }
+
+#histImg3 { border-color: #43a047; }
+#histImg3:checked { background: #43a047; }
+
+#histImg4 { border-color: #fb8c00; }
+#histImg4:checked { background: #fb8c00; }
