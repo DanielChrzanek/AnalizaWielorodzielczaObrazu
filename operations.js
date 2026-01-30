@@ -1,10 +1,4 @@
-// ============================================================================
-// Operacje punktowe na pojedynczym obrazie w skali szarości.
-// Funkcje modyfikują obraz "img" w miejscu (bez tworzenia nowego obrazu).
-// ============================================================================
-
-
-// Mnoży jasność piksela przez współczynnik i przycina wynik do zakresu 0..255
+// Mnoży jasność piksela przez współczynnik i przycina wynik do zakresu <0, 255>
 function clamping(value, img) {
   img.loadPixels();
 
@@ -24,8 +18,7 @@ function clamping(value, img) {
   img.updatePixels();
 }
 
-
-// Dodaje stałą wartość do piksela (rozjaśnienie/ściemnienie) i przycina do 0..255
+// Dodaje stałą wartość do piksela (rozjaśnienie/ściemnienie) i przycina do <0, 255>
 function changeBrightness(value, img) {
   img.loadPixels();
 
@@ -45,8 +38,7 @@ function changeBrightness(value, img) {
   img.updatePixels();
 }
 
-
-// Zmienia kontrast wg wzoru: value*(x-128)+128 i przycina do 0..255
+// Zmienia kontrast wg wzoru value*(x-128)+128 i przycina do <0, 255>
 function changeContrast(value, img) {
   img.loadPixels();
 
@@ -66,8 +58,7 @@ function changeContrast(value, img) {
   img.updatePixels();
 }
 
-
-// Odwraca jasność piksela (negatyw): 255 - x
+// Odwraca jasność piksela (negatyw) 255 - x
 function invertingImage(img) {
   img.loadPixels();
 
@@ -84,8 +75,7 @@ function invertingImage(img) {
   img.updatePixels();
 }
 
-
-// Progowanie (threshold): >=128 -> 255, <128 -> 0
+// Progowanie >=128 -> 255, <128 -> 0
 function thresholding(img) {
   img.loadPixels();
 
@@ -105,8 +95,7 @@ function thresholding(img) {
   img.updatePixels();
 }
 
-
-// Korekcja gamma: (x/255)^value * 255 i przycięcie do 0..255
+// Korekcja gamma (x/255)^value * 255 i przycięcie do <0, 255>
 function gammaCorrection(value, img) {
   img.loadPixels();
 
@@ -125,13 +114,6 @@ function gammaCorrection(value, img) {
 
   img.updatePixels();
 }
-
-
-
-// ============================================================================
-// Operacje punktowe na dwóch obrazach.
-// Funkcje tworzą NOWY obraz (createImage) i zwracają wynik.
-// ============================================================================
 
 
 // Dodaje dwa obrazy z maksymalną wartością do 255
@@ -165,8 +147,7 @@ function addImages(img, img2) {
   return addedImages;
 }
 
-
-// Uśrednia dwa obrazy: (a+b)/2
+// Uśrednia dwa obrazy (a+b)/2
 function averageImages(img, img2) {
   img.loadPixels();
   img2.loadPixels();
@@ -193,8 +174,7 @@ function averageImages(img, img2) {
   return averagedImages;
 }
 
-
-// Liczy różnicę bezwzględną dwóch obrazów: |a-b|
+// Liczenie różnicę bezwzględnej dwóch obrazów
 function differenceImages(img, img2) {
   img.loadPixels();
   img2.loadPixels();
@@ -221,8 +201,7 @@ function differenceImages(img, img2) {
   return diffedImages;
 }
 
-
-// Dzieli dwa obrazy: a/b z zabezpieczeniem przed b==0
+// Dzielenie dwóch obrazów a/b z zabezpieczeniem przed b==0
 function divideImages(img, img2) {
   img.loadPixels();
   img2.loadPixels();
@@ -255,7 +234,7 @@ function divideImages(img, img2) {
 }
 
 
-// Wybiera maksimum z dwóch obrazów: max(a,b)
+// Wybór maksimum z dwóch pikseli z obrazów max(a,b)
 function maxImages(img, img2) {
   img.loadPixels();
   img2.loadPixels();
@@ -282,8 +261,7 @@ function maxImages(img, img2) {
   return maxedImages;
 }
 
-
-// Wybiera minimum z dwóch obrazów: min(a,b)
+// Wybiera minimum z dwóch obrazów min(a,b)
 function minImages(img, img2) {
   img.loadPixels();
   img2.loadPixels();
@@ -310,8 +288,7 @@ function minImages(img, img2) {
   return minedImages;
 }
 
-
-// Mnoży dwa obrazy: a*b z maksymalną wartością do 255
+// Mnożenie dwóch obrazów a*b z maksymalną wartością do 255
 function multiplyImages(img, img2) {
   img.loadPixels();
   img2.loadPixels();
@@ -342,7 +319,7 @@ function multiplyImages(img, img2) {
 }
 
 
-// Odejmuje dwa obrazy: a-b z przycięciem do 0..255
+// Odejmowanie pikseli dwóch obrazów a-b z przycięciem do <0, 255>
 function substractImages(img, img2) {
   img.loadPixels();
   img2.loadPixels();
@@ -372,14 +349,6 @@ function substractImages(img, img2) {
   return subedImages;
 }
 
-
-
-// ============================================================================
-// Filtr liniowy
-// Filtry nieliniowe
-// ============================================================================
-
-
 // Filtr liniowy 3x3 lub 5x5 lub 7x7 z maską 
 function linear(img, filter) {
   let w = img.width;
@@ -389,7 +358,7 @@ function linear(img, filter) {
   let size = filter.length;
   let offset = Math.floor(size / 2);
 
-  // Robimy kopię i wymuszamy GRAY, żeby operować na jednym kanale (R)
+  // Tworzenie kopii i wymuszenie szarości, żeby operować na jednym kanale (R)
   let copyImg = img.get();
   copyImg.filter(GRAY);
   copyImg.loadPixels();
@@ -398,26 +367,26 @@ function linear(img, filter) {
   let copyImg2 = createImage(w, h);
   copyImg2.loadPixels();
 
-  // Pomijamy brzegi o szerokości "offset" (żeby okno NxN mieściło się w obrazie)
+  // Pomijamnie brzegów o szerokości "offset" 
+  // Zeby okno NxN mieściło się w obrazie
   for (let v = offset; v <= h - 1 - offset; v++) {
     for (let u = offset; u <= w - 1 - offset; u++) {
       let a = 0;
 
-      // Okno NxN: (i,j) to przesunięcie względem środka (u,v)
+      // Okno NxN (i,j) to przesunięcie względem środka (u,v)
       for (let j = -offset; j <= offset; j++) {
         for (let i = -offset; i <= offset; i++) {
-          // Indeks w tablicy pixels (RGBA), stąd mnożenie przez 4
+          // Indeks w tablicy pixels (RGBA), przez to mnożenie przez 4
           let index = 4 * ((u + i) + (v + j) * w);
 
-          // b = wartość sąsiada (kanał R w GRAY), c = waga z maski
-          let b = copyImg.pixels[index];
-          let c = filter[j + offset][i + offset];
+          let b = copyImg.pixels[index]; // wartość sąsiada 
+          let c = filter[j + offset][i + offset]; // waga z maski
 
           a += c * b;
         }
       }
 
-      // Zaokrąglenie + przycięcie (0..255)
+      // Zaokrąglenie + przycięcie <0, 255>
       let d = Math.round(a);
       if (d < 0) d = 0;
       else if (d > 255) d = 255;
@@ -436,25 +405,24 @@ function linear(img, filter) {
   return copyImg2;
 }
 
-
-
 // Filtr maksimum 3x3 (nieliniowy)
-// - w oknie 3x3 wybiera największą wartość
+// W oknie 3x3 wybór największej wartości
 function maxNonlinearFilter(maxImg, copyImg) {
   let w = maxImg.width;
   let h = maxImg.height;
 
-  // maxImg: obraz wyjściowy (nadpisywany), copyImg: obraz źródłowy (np. kopia GRAY)
-  maxImg.loadPixels();
-  copyImg.loadPixels();
+  maxImg.loadPixels(); // maxImg obraz wyjściowy
+  copyImg.loadPixels(); // obraz źródłowy
 
-  // Pomijamy brzegi: brak pełnego okna 3x3 na krawędziach
+  // Pomijamy brzegi
+  // Brak pełnego okna 3x3 na krawędziach
   for (let v = 1; v <= h - 2; v++) {
     for (let u = 1; u <= w - 2; u++) {
-      // Start od 0, bo szukamy maksimum
+      // Start od 0, bo szuka maksimum
       let a = 0;
 
-      // Przeglądamy okno 3x3 i aktualizujemy maksimum
+      // Przeglądnaie okna 3x3
+      // Aktualizacja maksimum
       for (let j = -1; j <= 1; j++) {
         for (let i = -1; i <= 1; i++) {
           let index = 4 * ((u + i) + (v + j) * w);
@@ -476,9 +444,8 @@ function maxNonlinearFilter(maxImg, copyImg) {
   maxImg.updatePixels();
 }
 
-
 // Filtr minimum 3x3 (nieliniowy)
-// - w oknie 3x3 wybiera najmniejszą wartość
+// W oknie 3x3 wybór najmniejszej wartości
 function minNonlinearFilter(minImg, copyImg) {
   let w = minImg.width;
   let h = minImg.height;
@@ -513,7 +480,7 @@ function minNonlinearFilter(minImg, copyImg) {
 
 
 // Filtr medianowy 3x3 (nieliniowy)
-// - zbiera 9 wartości z okna 3x3, sortuje i wybiera środkową (medianę)
+// Zbiór 9 wartości z okna 3x3, sortowanie i wybór mediany
 function medianNonlinearFilter(medianImg, copyImg) {
   let w = medianImg.width;
   let h = medianImg.height;
@@ -537,9 +504,8 @@ function medianNonlinearFilter(medianImg, copyImg) {
         }
       }
 
-      // Mediana = element środkowy po sortowaniu
       medianArray.sort((a, b) => a - b);
-      let c = medianArray[4];
+      let c = medianArray[4]; // element środkowy po sortowaniu
 
       let index2 = 4 * (u + v * w);
       medianImg.pixels[index2] = c;
@@ -552,29 +518,22 @@ function medianNonlinearFilter(medianImg, copyImg) {
   medianImg.updatePixels();
 }
 
-
-// Filtr ważonej mediany
-// - maska mówi, ile razy powielić daną próbkę w zbiorze mediany (większa waga = większy wpływ)
+// Filtr mediany ważonej
+// Maska mówi, ile razy powielić daną próbkę w zbiorze mediany 
+// Większa waga = większy wpływ
 function weightedNonlinearMedianFilter(weightedMedianImg, copyImg, mask) {
   let w = weightedMedianImg.width;
   let h = weightedMedianImg.height;
 
-  // Domyślna maska
-  if (!mask)
-    mask = [
-      [1, 2, 1],
-      [2, 3, 2],
-      [1, 2, 1],
-    ];
-
-  // Rozmiar maski i przesunięcie (dla 3x3 offset=1)
+  // Rozmiar maski i przesunięcie 
+  // Dla 3x3 offset = 1
   const size = mask.length;
   const offset = Math.floor(size / 2);
 
   weightedMedianImg.loadPixels();
   copyImg.loadPixels();
 
-  // Suma wag = liczba elementów w tablicy próbek
+  // Liczba elementów w tablicy próbek
   let total = mask.flat().reduce((a, b) => a + b, 0);
 
   // Zakres pętli zależy od offsetu (żeby nie wyjść poza obraz)
