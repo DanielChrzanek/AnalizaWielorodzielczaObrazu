@@ -1,17 +1,15 @@
-// Obrazy: img1/img2 wejściowe, img3/img4 pomocnicze/wynikowe
+// Obrazy
+
 let img1;
 let img2;
 let img3;
 let img4;
 let which;
 
-// Input pliku 
-const fileInput = document.getElementById("fileInput");
-fileInput.onchange = loadImgFromFile;
+// Funkce pomocznice do wykonywania operacji
 
 const getEl = (id) => document.getElementById(id);
 
-// Uruchamia operację na kopii img1 i zapisuje wynik do img3
 function withImg1ToImg3(fn, value) {
   if (!img1) return;
   const temp = img1.get();
@@ -20,13 +18,11 @@ function withImg1ToImg3(fn, value) {
   img3 = temp;
 }
 
-// Uruchamia operację na img1 i img2 (funkcja zwraca nowy obraz) -> img3
 function withImg1Img2ToImg3(fn) {
   if (!img1 || !img2) return;
   img3 = fn(img1, img2);
 }
 
-// Dla filtrów nieliniowych: fn zapisuje wynik do przekazanego obrazu wyjściowego
 function withCopyResultToImg3(fn) {
   if (!img1) return;
   const copy = img1.get();
@@ -35,29 +31,45 @@ function withCopyResultToImg3(fn) {
   img3 = result;
 }
 
-// Ustawia slot docelowy (1/2) i otwiera wybór pliku
 function setWhichAndPick(n) {
   which = n;
   fileInput.click();
 }
 
-// Wczytywanie obrazów do img1 / img2
+// Wczytywanie obrazów
+
+const fileInput = document.getElementById("fileInput");
+fileInput.onchange = loadImgFromFile;
+
 getEl("loadImg1Btn").onclick = () => setWhichAndPick(1);
 getEl("loadImg2Btn").onclick = () => setWhichAndPick(2);
 
-// Zamiany slotów obrazów
+function loadImgFromFile() {
+  const file = fileInput.files[0];
+  if (!file) return;
+
+  const url = URL.createObjectURL(file);
+
+  loadImage(url, (imgLoaded) => {
+    if (which === 1) img1 = imgLoaded;
+    else img2 = imgLoaded;
+  });
+}
+
+// Zaamiana obrazów
+
 getEl("swapImg12Btn").onclick = () => ([img1, img2] = [img2, img1]);
 getEl("swapImg13Btn").onclick = () => ([img1, img3] = [img3, img1]);
 getEl("swapImg14Btn").onclick = () => ([img1, img4] = [img4, img1]);
 getEl("swapImg34Btn").onclick = () => ([img3, img4] = [img4, img3]);
 
-// Konwersja img1 do skali szarości
+// Operacje na jednym obrazie
+
 getEl("grayBtn").onclick = () => {
   if (!img1) return;
   img1.filter(GRAY);
 };
 
-// Operacje punktowe na img1 -> wynik w img3
 getEl("clampingBtn").onclick = () => {
   const val = Number(getEl("clampingInput").value);
   withImg1ToImg3(clamping, val);
@@ -81,13 +93,13 @@ getEl("gammaBtn").onclick = () => {
 getEl("invertBtn").onclick = () => withImg1ToImg3(invertingImage);
 getEl("thresholdBtn").onclick = () => withImg1ToImg3(thresholding);
 
-// Konwersja img1 i img2 do szarości
+// Operacje na dwóch obrazach
+
 getEl("gray2Btn").onclick = () => {
   if (img1) img1.filter(GRAY);
   if (img2) img2.filter(GRAY);
 };
 
-// Operacje na img1 i img2 -> wynik w img3
 getEl("addBtn").onclick = () => withImg1Img2ToImg3(addImages);
 getEl("subBtn").onclick = () => withImg1Img2ToImg3(substractImages);
 getEl("diffModBtn").onclick = () => withImg1Img2ToImg3(differenceImages);
@@ -97,7 +109,8 @@ getEl("avgBtn").onclick = () => withImg1Img2ToImg3(averageImages);
 getEl("minBtn").onclick = () => withImg1Img2ToImg3(minImages);
 getEl("maxBtn").onclick = () => withImg1Img2ToImg3(maxImages);
 
-// Odczyt maski filtra z textarea: tylko 3x3, 5x5, 7x7
+// Odczyt maski
+
 function readFilter() {
   const text = getEl("filterArea").value.trim();
   if (!text) return null;
@@ -131,8 +144,8 @@ function readFilter() {
   return filter;
 }
 
+// Filtry
 
-// Filtr liniowy -> img3
 getEl("linFilterBtn").onclick = () => {
   if (!img1) return;
   const f = readFilter();
@@ -140,12 +153,11 @@ getEl("linFilterBtn").onclick = () => {
   img3 = linear(img1, f);
 };
 
-// Filtry nieliniowe 3x3 -> img3 (piszą wynik do obrazu wyjściowego)
 getEl("maxNonlinFilterBtn").onclick = () => withCopyResultToImg3(maxNonlinearFilter);
 getEl("minNonlinFilterBtn").onclick = () => withCopyResultToImg3(minNonlinearFilter);
 getEl("medianNonlinFilterBtn").onclick = () => withCopyResultToImg3(medianNonlinearFilter);
 
-// Ważona mediana z maską z textarea -> img3
+
 getEl("weightedNonlinMedianFilterBtn").onclick = () => {
   if (!img1) return;
   const f = readFilter();
@@ -157,7 +169,6 @@ getEl("weightedNonlinMedianFilterBtn").onclick = () => {
   img3 = result;
 };
 
-// p5.js setup: dopasowany canvas 
 function setup() {
   const container = getEl("canvas-container");
   const cnv = createCanvas(container.clientWidth, container.clientHeight);
@@ -166,12 +177,14 @@ function setup() {
 }
 
 // Dopasowanie canvasa po zmianie rozmiaru okna
+
 function windowResized() {
   const container = getEl("canvas-container");
   resizeCanvas(container.clientWidth, container.clientHeight);
 }
 
-// Ramka dzieląca widok na 4 ćwiartki
+// Dzielenie canvasu na 4 sekcje
+
 function drawFrames() {
   stroke(80);
   strokeWeight(2);
@@ -185,7 +198,8 @@ function drawFrames() {
   rect(0, 0, width, height);
 }
 
-// Render 4 obrazów: 1/2 u góry, 3/4 na dole
+// Renderowanie obrazów
+
 function draw() {
   background(240);
 
@@ -200,13 +214,14 @@ function draw() {
   drawFrames();
 }
 
-// Histogram (Chart.js)
+// Histogram 
+
 let histChart = null;
 let showHistogram = false;
 
 window.addEventListener("resize", resizeHistogramCanvas);
 
-// Przełączanie widoku: obrazy <-> histogram
+// Przełączanie widoku
 getEl("toggleHistogramBtn").onclick = () => {
   const histCanvas = getEl("histCanvas");
   const btn = getEl("toggleHistogramBtn");
@@ -224,7 +239,7 @@ getEl("toggleHistogramBtn").onclick = () => {
   }
 };
 
-// Dopasowanie canvasa histogramu
+// Do zmiany rozmiaru
 function resizeHistogramCanvas() {
   const histCanvas = getEl("histCanvas");
   const container = getEl("canvas-container");
@@ -233,7 +248,6 @@ function resizeHistogramCanvas() {
   histCanvas.height = container.clientHeight;
 }
 
-// Liczy histogram dla obrazu
 function computeHistogram(p5img) {
   if (!p5img) return null;
 
@@ -293,7 +307,6 @@ function drawHistogramChart(hist) {
   });
 }
 
-// Zbiera obrazy zaznaczone checkboxami do porównania histogramów
 function getSelectedImages() {
   const images = [];
 
@@ -305,7 +318,6 @@ function getSelectedImages() {
   return images;
 }
 
-// Wiele histogramów na jednym wykresie
 function drawMultiHistogram(selected) {
   if (selected.length === 0) return;
 
@@ -350,15 +362,3 @@ document.querySelectorAll("#histControls input").forEach((cb) => {
   };
 });
 
-// Wczytuje obraz z pliku do img1 albo img2
-function loadImgFromFile() {
-  const file = fileInput.files[0];
-  if (!file) return;
-
-  const url = URL.createObjectURL(file);
-
-  loadImage(url, (imgLoaded) => {
-    if (which === 1) img1 = imgLoaded;
-    else img2 = imgLoaded;
-  });
-}
